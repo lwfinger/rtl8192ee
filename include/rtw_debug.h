@@ -103,7 +103,7 @@ extern uint rtw_drv_log_level;
 #undef RTW_PRINT
 #define RTW_PRINT(fmt, arg...)     \
 	do {\
-		if (_DRV_ALWAYS_ <= rtw_drv_log_level) {\
+		if (_DRV_DEBUG_ <= rtw_drv_log_level) {\
 			_dbgdump(DRIVER_PREFIX fmt, ##arg);\
 		} \
 	} while (0)
@@ -240,7 +240,7 @@ extern uint rtw_drv_log_level;
 
 #undef _RTW_INFO_DUMP
 #define _RTW_INFO_DUMP(_TitleString, _HexData, _HexDataLen)			\
-	if (_DRV_INFO_ <= rtw_drv_log_level) {	\
+	if (_DRV_DEBUG_ <= rtw_drv_log_level) {	\
 		int __i;								\
 		u8	*ptr = (u8 *)_HexData;				\
 		_dbgdump(_TitleString);						\
@@ -279,10 +279,12 @@ extern uint rtw_drv_log_level;
 #undef RTW_PRINT_SEL
 #define RTW_PRINT_SEL(sel, fmt, arg...) \
 	do {\
-		if (sel == RTW_DBGDUMP)\
-			RTW_PRINT(fmt, ##arg); \
-		else {\
-			_seqdump(sel, fmt, ##arg) /*rtw_warn_on(1)*/; \
+		if (_DRV_DEBUG_ <= rtw_drv_log_level) {\
+			if (sel == RTW_DBGDUMP)\
+				RTW_PRINT(fmt, ##arg); \
+			else {\
+				_seqdump(sel, fmt, ##arg) /*rtw_warn_on(1)*/; \
+			} \
 		} \
 	} while (0)
 
@@ -290,10 +292,12 @@ extern uint rtw_drv_log_level;
 #undef _RTW_PRINT_SEL
 #define _RTW_PRINT_SEL(sel, fmt, arg...) \
 	do {\
-		if (sel == RTW_DBGDUMP)\
-			_RTW_PRINT(fmt, ##arg); \
-		else {\
-			_seqdump(sel, fmt, ##arg) /*rtw_warn_on(1)*/; \
+		if (_DRV_DEBUG_ <= rtw_drv_log_level) {\
+			if (sel == RTW_DBGDUMP)\
+				_RTW_PRINT(fmt, ##arg); \
+			else {\
+				_seqdump(sel, fmt, ##arg) /*rtw_warn_on(1)*/; \
+			} \
 		} \
 	} while (0)
 
@@ -301,25 +305,27 @@ extern uint rtw_drv_log_level;
 #undef _RTW_DUMP_SEL
 #define _RTW_DUMP_SEL(sel, _HexData, _HexDataLen) \
 	do {\
-		if (sel == RTW_DBGDUMP) {\
-			int __i;								\
-			u8	*ptr = (u8 *)_HexData;				\
-			for (__i = 0; __i < (int)_HexDataLen; __i++) {				\
-				_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0) ? "  " : " ");	\
-				if (((__i + 1) % 16) == 0)	\
-					_dbgdump("\n");			\
-			}								\
-			_dbgdump("\n");							\
-		} \
-		else {\
-			int __i;								\
-			u8	*ptr = (u8 *)_HexData;				\
-			for (__i = 0; __i < (int)_HexDataLen; __i++) {				\
-				_seqdump(sel, "%02X%s", ptr[__i], (((__i + 1) % 4) == 0) ? "  " : " ");	\
-				if (((__i + 1) % 16) == 0)	\
-					_seqdump(sel, "\n");			\
-			}								\
-			_seqdump(sel, "\n");							\
+		if (_DRV_DEBUG_ <= rtw_drv_log_level) {\
+			if (sel == RTW_DBGDUMP) {\
+				int __i;								\
+				u8	*ptr = (u8 *)_HexData;				\
+				for (__i = 0; __i < (int)_HexDataLen; __i++) {				\
+					_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0) ? "  " : " ");	\
+					if (((__i + 1) % 16) == 0)	\
+						_dbgdump("\n");			\
+				}								\
+				_dbgdump("\n");							\
+			} \
+			else {\
+				int __i;								\
+				u8	*ptr = (u8 *)_HexData;				\
+				for (__i = 0; __i < (int)_HexDataLen; __i++) {				\
+					_seqdump(sel, "%02X%s", ptr[__i], (((__i + 1) % 4) == 0) ? "  " : " ");	\
+					if (((__i + 1) % 16) == 0)	\
+						_seqdump(sel, "\n");			\
+				}								\
+				_seqdump(sel, "\n");							\
+			} \
 		} \
 	} while (0)
 
