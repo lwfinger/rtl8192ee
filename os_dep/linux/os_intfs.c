@@ -109,16 +109,16 @@ module_param(rtw_usb_rxagg_mode, int, 0644);
 int rtw_dynamic_agg_enable = 1;
 module_param(rtw_dynamic_agg_enable, int, 0644);
 
-/* set log level when inserting driver module, default log level is _DRV_INFO_ = 4,
+/* set log level when inserting driver module, default log level is _DRV_DEBUG_ = 3,
 * please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
 */
 #ifdef RTW_LOG_LEVEL
 	uint rtw_drv_log_level = (uint)RTW_LOG_LEVEL; /* from Makefile */
 #else
-	uint rtw_drv_log_level = _DRV_INFO_;
+	uint rtw_drv_log_level = _DRV_DEBUG_;
 #endif
 module_param(rtw_drv_log_level, uint, 0644);
-MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, default log level is _DRV_INFO_ = 4");
+MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, default log level is _DRV_DEBUG_ = 3");
 
 int rtw_radio_enable = 1;
 int rtw_long_retry_lmt = 7;
@@ -1583,7 +1583,7 @@ int rtw_os_ndev_register(_adapter *adapter, const char *name)
 
 #if defined(CONFIG_IOCTL_CFG80211)
 	if (rtw_cfg80211_ndev_res_register(adapter) != _SUCCESS) {
-		rtw_warn_on(1);
+		pr_info("Failed to register cfg80211\n");
 		ret = _FAIL;
 		goto exit;
 	}
@@ -2994,7 +2994,7 @@ int rtw_os_ndevs_register(struct dvobj_priv *dvobj)
 			status = rtw_os_ndev_register(adapter, name);
 
 			if (status != _SUCCESS) {
-				rtw_warn_on(1);
+				pr_info("Failed to register device\n");
 				break;
 			}
 		}
