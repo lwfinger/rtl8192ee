@@ -114,7 +114,7 @@ check_negative(
 *                           RadioA.TXT
 ******************************************************************************/
 
-u32 array_mp_8192e_radioa[] = {
+static u32 array_mp_8192e_radioa[] = {
 	0x07F, 0x00000082,
 	0x081, 0x0003FC00,
 	0x000, 0x00030000,
@@ -601,7 +601,7 @@ odm_get_version_mp_8192e_radioa(void)
 *                           RadioB.TXT
 ******************************************************************************/
 
-u32 array_mp_8192e_radiob[] = {
+static u32 array_mp_8192e_radiob[] = {
 	0x07F, 0x00000082,
 	0x081, 0x0003FC00,
 	0x000, 0x00030000,
@@ -1119,34 +1119,34 @@ odm_read_and_config_mp_8192e_txpowertrack_ap(
 ******************************************************************************/
 
 #if DEV_BUS_TYPE == RT_PCI_INTERFACE
-u8 g_delta_swing_table_idx_mp_5gb_n_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
+static u8 g_delta_swing_table_idx_mp_5gb_n_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 1, 2, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 12, 12, 13, 13, 14, 14, 14, 14, 14, 14, 14},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 14, 14, 14, 14, 14},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 14, 14, 14, 14, 14},
 };
-u8 g_delta_swing_table_idx_mp_5gb_p_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
+static u8 g_delta_swing_table_idx_mp_5gb_p_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 16, 17, 17, 18, 19, 20, 20, 20},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 19, 20, 20, 20},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 21},
 };
-u8 g_delta_swing_table_idx_mp_5ga_n_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
+static u8 g_delta_swing_table_idx_mp_5ga_n_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
 	{0, 1, 2, 3, 3, 4, 4, 5, 5, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 14, 14, 14, 14, 14},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 6, 7, 7, 8, 8, 9, 10, 11, 11, 12, 13, 13, 14, 15, 16, 16, 16, 16, 16, 16, 16},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 10, 11, 11, 12, 13, 14, 14, 15, 15, 16, 16, 16, 16, 16, 16, 16},
 };
-u8 g_delta_swing_table_idx_mp_5ga_p_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
+static u8 g_delta_swing_table_idx_mp_5ga_p_txpowertrack_pcie_8192e[][DELTA_SWINGIDX_SIZE] = {
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 21},
 	{0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 21},
 };
-u8 g_delta_swing_table_idx_mp_2gb_n_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2gb_p_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2ga_n_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2ga_p_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_pcie_8192e[] = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_pcie_8192e[] = {0, 0, 0, 0, 1, 1, 1, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 7, 7, 7, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_pcie_8192e[] = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
-u8 g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_pcie_8192e[] = {0, 0, 0, 0, 1, 1, 1, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 7, 7, 7, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2gb_n_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2gb_p_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2ga_n_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2ga_p_txpowertrack_pcie_8192e[]    = {0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2g_cck_b_n_txpowertrack_pcie_8192e[] = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2g_cck_b_p_txpowertrack_pcie_8192e[] = {0, 0, 0, 0, 1, 1, 1, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 7, 7, 7, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2g_cck_a_n_txpowertrack_pcie_8192e[] = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
+static u8 g_delta_swing_table_idx_mp_2g_cck_a_p_txpowertrack_pcie_8192e[] = {0, 0, 0, 0, 1, 1, 1, 3, 3, 4, 4, 4, 4, 6, 6, 6, 6, 7, 7, 7, 9, 10, 10, 11, 11, 12, 12, 13, 14, 15};
 #endif
 
 void
@@ -1307,7 +1307,7 @@ odm_read_and_config_mp_8192e_txpowertrack_usb(
 *                           TXPWR_LMT.TXT
 ******************************************************************************/
 
-const char *array_mp_8192e_txpwr_lmt[] = {
+static const char *array_mp_8192e_txpwr_lmt[] = {
 	"FCC", "2.4G", "20M", "CCK", "1T", "01", "34",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "01", "28",
 	"MKK", "2.4G", "20M", "CCK", "1T", "01", "32",
@@ -1771,7 +1771,7 @@ odm_read_and_config_mp_8192e_txpwr_lmt(
 *                           TXPWR_LMT_8192E_SAR_5mm.TXT
 ******************************************************************************/
 
-const char *array_mp_8192e_txpwr_lmt_8192e_sar_5mm[] = {
+static const char *array_mp_8192e_txpwr_lmt_8192e_sar_5mm[] = {
 	"FCC", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "01", "32",
 	"MKK", "2.4G", "20M", "CCK", "1T", "01", "32",

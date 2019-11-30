@@ -64,7 +64,7 @@ void halrf_rf_lna_setting_8192e(
 	}
 }
 
-void set_iqk_matrix_8192e(
+static void set_iqk_matrix_8192e(
 	struct PHY_DM_STRUCT	*p_dm,
 	u8		OFDM_index,
 	u8		rf_path,
@@ -686,7 +686,7 @@ void configure_txpower_track_8192e(
 #define MAX_TOLERANCE		5
 #define IQK_DELAY_TIME		1		/* ms */
 
-u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
+static u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
 phy_path_a_iqk_8192e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean		config_path_b
@@ -745,7 +745,7 @@ phy_path_a_iqk_8192e(
 	return result;
 }
 
-u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
+static u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
 phy_path_a_rx_iqk_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean		config_path_b
@@ -918,7 +918,7 @@ phy_path_a_rx_iqk_92e(
 
 }
 
-u8				/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
+static u8				/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
 phy_path_b_iqk_8192e(
 	struct PHY_DM_STRUCT		*p_dm
 )
@@ -1000,7 +1000,7 @@ phy_path_b_iqk_8192e(
 }
 
 
-u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
+static u8			/* bit0 = 1 => Tx OK, bit1 = 1 => Rx OK */
 phy_path_b_rx_iqk_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean		config_path_b
@@ -1159,8 +1159,7 @@ phy_path_b_rx_iqk_92e(
 	return result;
 }
 
-
-void
+static void
 _phy_path_a_fill_iqk_matrix_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean	is_iqk_ok,
@@ -1221,7 +1220,7 @@ _phy_path_a_fill_iqk_matrix_92e(
 	}
 }
 
-void
+static void
 _phy_path_b_fill_iqk_matrix_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean	is_iqk_ok,
@@ -1291,7 +1290,7 @@ _phy_save_adda_registers_92e(
 }
 
 
-void
+static void
 _phy_save_mac_registers_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	u32		*mac_reg,
@@ -1306,8 +1305,7 @@ _phy_save_mac_registers_92e(
 	mac_backup[i] = odm_read_4byte(p_dm, mac_reg[i]);
 }
 
-
-void
+static void
 _phy_reload_adda_registers_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	u32		*adda_reg,
@@ -1322,7 +1320,7 @@ _phy_reload_adda_registers_92e(
 		odm_set_bb_reg(p_dm, adda_reg[i], MASKDWORD, adda_backup[i]);
 }
 
-void
+static void
 _phy_reload_mac_registers_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	u32		*mac_reg,
@@ -1393,7 +1391,7 @@ _phy_mac_setting_calibration_92e(
 
 }
 
-void
+static void
 _phy_path_a_stand_by_92e(
 	struct PHY_DM_STRUCT		*p_dm
 )
@@ -1405,7 +1403,7 @@ _phy_path_a_stand_by_92e(
 	odm_set_bb_reg(p_dm, REG_FPGA0_IQK, 0xffffff00, 0x808000);
 }
 
-void
+static void
 _phy_path_b_stand_by_92e(
 	struct PHY_DM_STRUCT		*p_dm
 )
@@ -1416,7 +1414,7 @@ _phy_path_b_stand_by_92e(
 	odm_set_bb_reg(p_dm, REG_FPGA0_IQK, 0xffffff00, 0x808000);
 }
 
-void
+static void
 _phy_pi_mode_switch_92e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean		pi_mode
@@ -1429,7 +1427,7 @@ _phy_pi_mode_switch_92e(
 	odm_set_bb_reg(p_dm, REG_FPGA0_XB_HSSI_PARAMETER1, MASKDWORD, mode);
 }
 
-boolean
+static boolean
 phy_simularity_compare_8192e(
 	struct PHY_DM_STRUCT		*p_dm,
 	s32		result[][8],
@@ -1519,7 +1517,7 @@ phy_simularity_compare_8192e(
 }
 
 
-void
+static void
 _phy_iq_calibrate_8192e(
 	struct PHY_DM_STRUCT		*p_dm,
 	s32		result[][8],
@@ -1754,7 +1752,7 @@ _phy_iq_calibrate_8192e(
 }
 
 
-void
+static void
 _phy_lc_calibrate_8192e(
 	struct PHY_DM_STRUCT		*p_dm,
 	boolean		is2T
@@ -1957,7 +1955,7 @@ phy_lc_calibrate_8192e(
 	_phy_lc_calibrate_8192e(p_dm, true);
 }
 
-void _phy_set_rf_path_switch_8192e(
+static void _phy_set_rf_path_switch_8192e(
 #if (DM_ODM_SUPPORT_TYPE & ODM_AP)
 	struct PHY_DM_STRUCT		*p_dm,
 #else

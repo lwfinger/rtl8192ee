@@ -13,6 +13,9 @@
  *
  *****************************************************************************/
 #ifndef CONFIG_PLATFORM_OPS
+
+#include "platform_ops.h"
+
 /*
  * Return:
  *	0:	power on successfully

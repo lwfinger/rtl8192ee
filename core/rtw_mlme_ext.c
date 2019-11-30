@@ -366,7 +366,7 @@ bool rtw_chplan_is_empty(u8 id)
 	return _FALSE;
 }
 
-bool rtw_regsty_is_excl_chs(struct registry_priv *regsty, u8 ch)
+static bool rtw_regsty_is_excl_chs(struct registry_priv *regsty, u8 ch)
 {
 	int i;
 
@@ -3944,7 +3944,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -3991,16 +3991,16 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	/*	WPS Section */
 	wpsielen = 0;
 	/*	WPS OUI */
-	*(u32 *)(wpsie) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(wpsie) = cpu_to_be32(WPSOUI);
 	wpsielen += 4;
 
 	/*	WPS version */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 	wpsielen += 2;
 
 	/*	Value: */
@@ -4008,21 +4008,21 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 
 	/*	Device Password ID */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 	wpsielen += 2;
 
 	/*	Value: */
 
 	if (pwdinfo->ui_got_wps_info == P2P_GOT_WPSINFO_PEER_DISPLAY_PIN)
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_USER_SPEC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_USER_SPEC);
 	else if (pwdinfo->ui_got_wps_info == P2P_GOT_WPSINFO_SELF_DISPLAY_PIN)
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);
 	else if (pwdinfo->ui_got_wps_info == P2P_GOT_WPSINFO_PBC)
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_PBC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_PBC);
 
 	wpsielen += 2;
 
@@ -4056,7 +4056,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_CAPABILITY;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4075,7 +4075,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_GO_INTENT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4087,7 +4087,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_CONF_TIMEOUT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4100,7 +4100,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_LISTEN_CH;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4124,16 +4124,16 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_EX_LISTEN_TIMING;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
 	p2pielen += 2;
 
 	/*	Value: */
 	/*	Availability Period */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 	p2pielen += 2;
 
 	/*	Availability Interval */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 	p2pielen += 2;
 
 
@@ -4142,7 +4142,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_INTENDED_IF_ADDR;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4164,12 +4164,12 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 
 #ifdef CONFIG_CONCURRENT_MODE
 	if (rtw_mi_check_status(padapter, MI_LINKED) && padapter->registrypriv.full_ch_in_p2p_handshake == 0)
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
 	else
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #else
 
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 
 #endif
 	p2pielen += 2;
@@ -4229,7 +4229,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	/*	Length: */
 	/*	21->P2P Device Address (6bytes) + Config Methods (2bytes) + Primary Device Type (8bytes)  */
 	/*	+ NumofSecondDevType (1byte) + WPS Device Name ID field (2bytes) + WPS Device Name Len field (2bytes) */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4240,21 +4240,21 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	/*	Config Method */
 	/*	This field should be big endian. Noted by P2P specification. */
 
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
 
 	p2pielen += 2;
 
 	/*	Primary Device Type */
 	/*	Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 	p2pielen += 2;
 
 	/*	OUI */
-	*(u32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
 	p2pielen += 4;
 
 	/*	Sub Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 	p2pielen += 2;
 
 	/*	Number of Secondary Device Types */
@@ -4262,11 +4262,11 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 
 	/*	Device Name */
 	/*	Type: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 	p2pielen += 2;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4279,7 +4279,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4323,7 +4323,7 @@ void issue_p2p_GO_request(_adapter *padapter, u8 *raddr)
 }
 
 
-void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint len, u8 result)
+static void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint len, u8 result)
 {
 	struct p2p_channels *ch_list = &(adapter_to_rfctl(padapter)->channel_list);
 	unsigned char category = RTW_WLAN_CATEGORY_PUBLIC;
@@ -4342,7 +4342,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -4400,16 +4400,16 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	/*	WPS Section */
 	wpsielen = 0;
 	/*	WPS OUI */
-	*(u32 *)(wpsie) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(wpsie) = cpu_to_be32(WPSOUI);
 	wpsielen += 4;
 
 	/*	WPS version */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 	wpsielen += 2;
 
 	/*	Value: */
@@ -4417,20 +4417,20 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 
 	/*	Device Password ID */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 	wpsielen += 2;
 
 	/*	Value: */
 	if (wps_devicepassword_id == WPS_DPID_USER_SPEC)
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);
 	else if (wps_devicepassword_id == WPS_DPID_REGISTRAR_SPEC)
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_USER_SPEC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_USER_SPEC);
 	else
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_PBC);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_PBC);
 	wpsielen += 2;
 
 	/*	Commented by Kurt 20120113 */
@@ -4477,7 +4477,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_STATUS;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4488,7 +4488,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_CAPABILITY;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4515,7 +4515,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_GO_INTENT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4533,7 +4533,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_CONF_TIMEOUT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4545,7 +4545,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4577,7 +4577,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	p2pie[p2pielen++] = P2P_ATTR_INTENDED_IF_ADDR;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4597,11 +4597,11 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 
 #ifdef CONFIG_CONCURRENT_MODE
 	if (rtw_mi_check_status(padapter, MI_LINKED) && padapter->registrypriv.full_ch_in_p2p_handshake == 0)
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
 	else
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #else
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 
 #endif
 	p2pielen += 2;
@@ -4662,7 +4662,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	/*	Length: */
 	/*	21->P2P Device Address (6bytes) + Config Methods (2bytes) + Primary Device Type (8bytes)  */
 	/*	+ NumofSecondDevType (1byte) + WPS Device Name ID field (2bytes) + WPS Device Name Len field (2bytes) */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4673,21 +4673,21 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 	/*	Config Method */
 	/*	This field should be big endian. Noted by P2P specification. */
 
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
 
 	p2pielen += 2;
 
 	/*	Primary Device Type */
 	/*	Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 	p2pielen += 2;
 
 	/*	OUI */
-	*(u32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
 	p2pielen += 4;
 
 	/*	Sub Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 	p2pielen += 2;
 
 	/*	Number of Secondary Device Types */
@@ -4695,11 +4695,11 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 
 	/*	Device Name */
 	/*	Type: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 	p2pielen += 2;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4712,7 +4712,7 @@ void issue_p2p_GO_response(_adapter *padapter, u8 *raddr, u8 *frame_body, uint l
 		p2pie[p2pielen++] = P2P_ATTR_GROUP_ID;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN + pwdinfo->nego_ssidlen);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN + pwdinfo->nego_ssidlen);
 		p2pielen += 2;
 
 		/*	Value: */
@@ -4747,7 +4747,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 
 	unsigned char category = RTW_WLAN_CATEGORY_PUBLIC;
 	u8			action = P2P_PUB_ACTION_ACTION;
-	u32			p2poui = cpu_to_be32(P2POUI);
+	__be32			p2poui = cpu_to_be32(P2POUI);
 	u8			oui_subtype = P2P_GO_NEGO_CONF;
 	u8			wpsie[255] = { 0x00 }, p2pie[255] = { 0x00 };
 	u8			wpsielen = 0, p2pielen = 0;
@@ -4756,7 +4756,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -4823,7 +4823,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 	p2pie[p2pielen++] = P2P_ATTR_STATUS;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4834,7 +4834,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 	p2pie[p2pielen++] = P2P_ATTR_CAPABILITY;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4853,7 +4853,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 	p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -4900,7 +4900,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 	/*	Type: */
 	p2pie[p2pielen++] = P2P_ATTR_CH_LIST;
 
-	*(u16 *)(p2pie + p2pielen) = 6;
+	*(__le16 *)(p2pie + p2pielen) = 6;
 	p2pielen += 2;
 
 	/*	Country String */
@@ -4948,7 +4948,7 @@ void issue_p2p_GO_confirm(_adapter *padapter, u8 *raddr, u8 result)
 		p2pie[p2pielen++] = P2P_ATTR_GROUP_ID;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN + pwdinfo->nego_ssidlen);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN + pwdinfo->nego_ssidlen);
 		p2pielen += 2;
 
 		/*	Value: */
@@ -4997,7 +4997,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -5061,7 +5061,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_CONF_TIMEOUT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5073,7 +5073,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_INVITATION_FLAGS;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5085,7 +5085,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5114,7 +5114,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 		p2pie[p2pielen++] = P2P_ATTR_GROUP_BSSID;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
 		p2pielen += 2;
 
 		/*	Value: */
@@ -5138,11 +5138,11 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 
 #ifdef CONFIG_CONCURRENT_MODE
 	if (rtw_mi_check_status(padapter, MI_LINKED) && padapter->registrypriv.full_ch_in_p2p_handshake == 0)
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
 	else
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #else
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #endif
 	p2pielen += 2;
 
@@ -5199,7 +5199,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	p2pie[p2pielen++] = P2P_ATTR_GROUP_ID;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(6 + pwdinfo->invitereq_info.ssidlen);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(6 + pwdinfo->invitereq_info.ssidlen);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5219,7 +5219,7 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 	/*	Length: */
 	/*	21->P2P Device Address (6bytes) + Config Methods (2bytes) + Primary Device Type (8bytes)  */
 	/*	+ NumofSecondDevType (1byte) + WPS Device Name ID field (2bytes) + WPS Device Name Len field (2bytes) */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5229,20 +5229,20 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 
 	/*	Config Method */
 	/*	This field should be big endian. Noted by P2P specification. */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_DISPLAY);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_DISPLAY);
 	p2pielen += 2;
 
 	/*	Primary Device Type */
 	/*	Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 	p2pielen += 2;
 
 	/*	OUI */
-	*(u32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
 	p2pielen += 4;
 
 	/*	Sub Category ID */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 	p2pielen += 2;
 
 	/*	Number of Secondary Device Types */
@@ -5250,11 +5250,11 @@ void issue_p2p_invitation_request(_adapter *padapter, u8 *raddr)
 
 	/*	Device Name */
 	/*	Type: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 	p2pielen += 2;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5296,7 +5296,7 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -5358,7 +5358,7 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 	p2pie[p2pielen++] = P2P_ATTR_STATUS;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
+	*(__be16 *)(p2pie + p2pielen) = cpu_to_le16(0x0001);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5375,7 +5375,7 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 	p2pie[p2pielen++] = P2P_ATTR_CONF_TIMEOUT;
 
 	/*	Length: */
-	*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+	*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 	p2pielen += 2;
 
 	/*	Value: */
@@ -5394,7 +5394,7 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 			p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -5418,7 +5418,7 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 			p2pie[p2pielen++] = P2P_ATTR_GROUP_BSSID;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(ETH_ALEN);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -5442,11 +5442,11 @@ void issue_p2p_invitation_response(_adapter *padapter, u8 *raddr, u8 dialogToken
 
 #ifdef CONFIG_CONCURRENT_MODE
 		if (rtw_mi_check_status(padapter, MI_LINKED) && padapter->registrypriv.full_ch_in_p2p_handshake == 0)
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(5 + 1);
 		else
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #else
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(len_channellist_attr);
 #endif
 		p2pielen += 2;
 
@@ -5532,7 +5532,7 @@ void issue_p2p_provision_request(_adapter *padapter, u8 *pssid, u8 ussidlen, u8 
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -5580,16 +5580,16 @@ void issue_p2p_provision_request(_adapter *padapter, u8 *pssid, u8 ussidlen, u8 
 
 	wpsielen = 0;
 	/*	WPS OUI */
-	*(u32 *)(wpsie) = cpu_to_be32(WPSOUI);
+	*(__be32 *)(wpsie) = cpu_to_be32(WPSOUI);
 	wpsielen += 4;
 
 	/*	WPS version */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 	wpsielen += 2;
 
 	/*	Value: */
@@ -5597,15 +5597,15 @@ void issue_p2p_provision_request(_adapter *padapter, u8 *pssid, u8 ussidlen, u8 
 
 	/*	Config Method */
 	/*	Type: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
 	wpsielen += 2;
 
 	/*	Length: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 	wpsielen += 2;
 
 	/*	Value: */
-	*(u16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->tx_prov_disc_info.wps_config_method_request);
+	*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->tx_prov_disc_info.wps_config_method_request);
 	wpsielen += 2;
 
 	pframe = rtw_set_ie(pframe, _VENDOR_SPECIFIC_IE_, wpsielen, (unsigned char *) wpsie, &pattrib->pktlen);
@@ -5652,7 +5652,7 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	unsigned char					*mac;
 	struct xmit_priv	*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
@@ -5762,16 +5762,16 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		wpsielen = 0;
 		/*	WPS OUI */
-		*(u32 *)(wpsie) = cpu_to_be32(WPSOUI);
+		*(__be32 *)(wpsie) = cpu_to_be32(WPSOUI);
 		wpsielen += 4;
 
 		/*	WPS version */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5783,23 +5783,23 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 		if (_rtw_memcmp(pmlmepriv->sa_ext, zero_array_check, L2SDTA_SERVICE_VE_LEN) == _FALSE
 		    || pmlmepriv->num_p2p_sdt != 0) {
 			/* Sec dev type */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SEC_DEV_TYPE_LIST);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SEC_DEV_TYPE_LIST);
 			wpsielen += 2;
 
 			/*	Length: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
 			wpsielen += 2;
 
 			/*	Value: */
 			/*	Category ID */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_DISPLAYS);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_DISPLAYS);
 			wpsielen += 2;
 
 			/*	OUI */
-			*(u32 *)(wpsie + wpsielen) = cpu_to_be32(INTEL_DEV_TYPE_OUI);
+			*(__be32 *)(wpsie + wpsielen) = cpu_to_be32(INTEL_DEV_TYPE_OUI);
 			wpsielen += 4;
 
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_WIDI_CONSUMER_SINK);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_WIDI_CONSUMER_SINK);
 			wpsielen += 2;
 
 			if (_rtw_memcmp(pmlmepriv->sa_ext, zero_array_check, L2SDTA_SERVICE_VE_LEN) == _FALSE) {
@@ -5812,11 +5812,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	WiFi Simple Config State */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SIMPLE_CONF_STATE);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SIMPLE_CONF_STATE);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5824,11 +5824,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Response Type */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_RESP_TYPE);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_RESP_TYPE);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5836,11 +5836,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	UUID-E */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_UUID_E);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_UUID_E);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0010);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0010);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5853,11 +5853,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Manufacturer */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MANUFACTURER);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MANUFACTURER);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0007);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0007);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5866,11 +5866,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Model Name */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MODEL_NAME);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MODEL_NAME);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0006);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0006);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5879,11 +5879,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Model Number */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MODEL_NUMBER);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_MODEL_NUMBER);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5891,11 +5891,11 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Serial Number */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SERIAL_NUMBER);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_SERIAL_NUMBER);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(ETH_ALEN);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(ETH_ALEN);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5904,33 +5904,33 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Primary Device Type */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
 		wpsielen += 2;
 
 		/*	Value: */
 		/*	Category ID */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 		wpsielen += 2;
 
 		/*	OUI */
-		*(u32 *)(wpsie + wpsielen) = cpu_to_be32(WPSOUI);
+		*(__be32 *)(wpsie + wpsielen) = cpu_to_be32(WPSOUI);
 		wpsielen += 4;
 
 		/*	Sub Category ID */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 		wpsielen += 2;
 
 		/*	Device Name */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->device_name_len);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->device_name_len);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -5939,15 +5939,15 @@ void issue_probersp_p2p(_adapter *padapter, unsigned char *da)
 
 		/*	Config Method */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 		wpsielen += 2;
 
 		/*	Value: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
 		wpsielen += 2;
 
 
@@ -5981,7 +5981,7 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 	struct pkt_attrib		*pattrib;
 	unsigned char			*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short		*fctrl;
+	__le16 *fctrl;
 	unsigned char			*mac;
 	unsigned char			bssrate[NumRates];
 	struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv);
@@ -6076,16 +6076,16 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 
 		wpsielen = 0;
 		/*	WPS OUI */
-		*(u32 *)(wpsie) = cpu_to_be32(WPSOUI);
+		*(__be32 *)(wpsie) = cpu_to_be32(WPSOUI);
 		wpsielen += 4;
 
 		/*	WPS version */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_VER1);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0001);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -6094,11 +6094,11 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 		if (pmlmepriv->wps_probe_req_ie == NULL) {
 			/*	UUID-E */
 			/*	Type: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_UUID_E);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_UUID_E);
 			wpsielen += 2;
 
 			/*	Length: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0010);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0010);
 			wpsielen += 2;
 
 			/*	Value: */
@@ -6111,25 +6111,25 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 
 			/*	Config Method */
 			/*	Type: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_CONF_METHOD);
 			wpsielen += 2;
 
 			/*	Length: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 			wpsielen += 2;
 
 			/*	Value: */
-			*(u16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
+			*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->supported_wps_cm);
 			wpsielen += 2;
 		}
 
 		/*	Device Name */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->device_name_len);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(pwdinfo->device_name_len);
 		wpsielen += 2;
 
 		/*	Value: */
@@ -6138,37 +6138,37 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 
 		/*	Primary Device Type */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0008);
 		wpsielen += 2;
 
 		/*	Value: */
 		/*	Category ID */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_RTK_WIDI);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_CID_RTK_WIDI);
 		wpsielen += 2;
 
 		/*	OUI */
-		*(u32 *)(wpsie + wpsielen) = cpu_to_be32(WPSOUI);
+		*(__be32 *)(wpsie + wpsielen) = cpu_to_be32(WPSOUI);
 		wpsielen += 4;
 
 		/*	Sub Category ID */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_RTK_DMP);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_PDT_SCID_RTK_DMP);
 		wpsielen += 2;
 
 		/*	Device Password ID */
 		/*	Type: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_ATTR_DEVICE_PWID);
 		wpsielen += 2;
 
 		/*	Length: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(0x0002);
 		wpsielen += 2;
 
 		/*	Value: */
-		*(u16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);	/*	Registrar-specified */
+		*(__be16 *)(wpsie + wpsielen) = cpu_to_be16(WPS_DPID_REGISTRAR_SPEC);	/*	Registrar-specified */
 		wpsielen += 2;
 
 		pframe = rtw_set_ie(pframe, _VENDOR_SPECIFIC_IE_, wpsielen, (unsigned char *) wpsie, &pattrib->pktlen);
@@ -6193,7 +6193,7 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 		p2pie[p2pielen++] = P2P_ATTR_CAPABILITY;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 		p2pielen += 2;
 
 		/*	Value: */
@@ -6211,7 +6211,7 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 		p2pie[p2pielen++] = P2P_ATTR_LISTEN_CH;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 		p2pielen += 2;
 
 		/*	Value: */
@@ -6235,16 +6235,16 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 		p2pie[p2pielen++] = P2P_ATTR_EX_LISTEN_TIMING;
 
 		/*	Length: */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
 		p2pielen += 2;
 
 		/*	Value: */
 		/*	Availability Period */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 		p2pielen += 2;
 
 		/*	Availability Interval */
-		*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+		*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 		p2pielen += 2;
 
 		if (rtw_p2p_chk_role(pwdinfo, P2P_ROLE_GO)) {
@@ -6253,7 +6253,7 @@ int _issue_probereq_p2p(_adapter *padapter, u8 *da, int wait_ack)
 			p2pie[p2pielen++] = P2P_ATTR_OPERATING_CH;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0005);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -6879,7 +6879,7 @@ unsigned int OnAction_ft(_adapter *padapter, union recv_frame *precv_frame)
 			goto exit;
 		}
 
-		status_code = le16_to_cpu(*(u16 *)((SIZE_PTR)pframe +  sizeof(struct rtw_ieee80211_hdr_3addr) + 14));
+		status_code = le16_to_cpu(*(__le16 *)((SIZE_PTR)pframe +  sizeof(struct rtw_ieee80211_hdr_3addr) + 14));
 		if (status_code != 0) {
 			RTW_ERR("FT: WLAN ACTION FT RESPONSE fail, status: %d\n", status_code);
 			goto exit;
@@ -7156,7 +7156,7 @@ unsigned int OnAction(_adapter *padapter, union recv_frame *precv_frame)
 unsigned int DoReserved(_adapter *padapter, union recv_frame *precv_frame)
 {
 
-	/* RTW_INFO("rcvd mgt frame(%x, %x)\n", (get_frame_sub_type(pframe) >> 4), *(unsigned int *)GetAddr1Ptr(pframe)); */
+	/* RTW_INFO("rcvd mgt frame(%x, %x)\n", (get_frame_sub_type(pframe) >> 4), *(__bensigned int *)GetAddr1Ptr(pframe)); */
 	return _SUCCESS;
 }
 
@@ -7505,7 +7505,7 @@ void issue_beacon(_adapter *padapter, int timeout_ms)
 	struct pkt_attrib	*pattrib;
 	unsigned char	*pframe;
 	struct rtw_ieee80211_hdr *pwlanhdr;
-	unsigned short *fctrl;
+	__le16 *fctrl;
 	unsigned int	rate_len;
 	struct xmit_priv	*pxmitpriv = &(padapter->xmitpriv);
 #if defined(CONFIG_AP_MODE) && defined (CONFIG_NATIVEAP_MLME)
@@ -7617,34 +7617,34 @@ void issue_beacon(_adapter *padapter, int timeout_ms)
 				/* now pframe is end of wsc ie, insert Primary Device Type & Device Name */
 				/*	Primary Device Type */
 				/*	Type: */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(WPS_ATTR_PRIMARY_DEV_TYPE);
 				insert_len += 2;
 
 				/*	Length: */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(0x0008);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(0x0008);
 				insert_len += 2;
 
 				/*	Value: */
 				/*	Category ID */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 				insert_len += 2;
 
 				/*	OUI */
-				*(u32 *)(pframe + insert_len) = cpu_to_be32(WPSOUI);
+				*(__be32 *)(pframe + insert_len) = cpu_to_be32(WPSOUI);
 				insert_len += 4;
 
 				/*	Sub Category ID */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 				insert_len += 2;
 
 
 				/*	Device Name */
 				/*	Type: */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 				insert_len += 2;
 
 				/*	Length: */
-				*(u16 *)(pframe + insert_len) = cpu_to_be16(pwdinfo->device_name_len);
+				*(__be16 *)(pframe + insert_len) = cpu_to_be16(pwdinfo->device_name_len);
 				insert_len += 2;
 
 				/*	Value: */
@@ -7810,7 +7810,7 @@ void issue_probersp(_adapter *padapter, unsigned char *da, u8 is_valid_p2p_probe
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	unsigned char					*mac, *bssid;
 	struct xmit_priv	*pxmitpriv = &(padapter->xmitpriv);
 #if defined(CONFIG_AP_MODE) && defined (CONFIG_NATIVEAP_MLME)
@@ -8085,7 +8085,7 @@ int _issue_probereq(_adapter *padapter, NDIS_802_11_SSID *pssid, u8 *da, u8 ch, 
 	struct pkt_attrib		*pattrib;
 	unsigned char			*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short		*fctrl;
+	__le16 *fctrl;
 	unsigned char			*mac;
 	unsigned char			bssrate[NumRates];
 	struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv);
@@ -8240,7 +8240,7 @@ void issue_auth(_adapter *padapter, struct sta_info *psta, unsigned short status
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	unsigned int					val32;
 	unsigned short				val16;
 	int use_shared_key = 0;
@@ -8418,8 +8418,8 @@ void issue_asocrsp(_adapter *padapter, unsigned short status, struct sta_info *p
 	struct rtw_ieee80211_hdr	*pwlanhdr;
 	struct pkt_attrib *pattrib;
 	unsigned char	*pbuf, *pframe;
-	unsigned short val, ie_status;
-	unsigned short *fctrl;
+	unsigned short ie_status;
+	__le16 *fctrl, val;
 	struct xmit_priv *pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
@@ -8473,7 +8473,7 @@ void issue_asocrsp(_adapter *padapter, unsigned short status, struct sta_info *p
 	pframe += pattrib->hdrlen;
 
 	/* capability */
-	val = *(unsigned short *)rtw_get_capability_from_ie(ie);
+	val = *(__le16 *)rtw_get_capability_from_ie(ie);
 
 	pframe = rtw_set_fixed_ie(pframe, _CAPABILITY_ , (unsigned char *)&val, &(pattrib->pktlen));
 
@@ -8638,7 +8638,7 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 	struct pkt_attrib				*pattrib;
 	unsigned char					*pframe, *p;
 	struct rtw_ieee80211_hdr			*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	unsigned short				val16;
 	unsigned int					i, j, ie_len, index = 0;
 	unsigned char					rf_type, bssrate[NumRates], sta_bssrate[NumRates];
@@ -8952,7 +8952,7 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 			p2pie[p2pielen++] = P2P_ATTR_CAPABILITY;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0002);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -8970,16 +8970,16 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 			p2pie[p2pielen++] = P2P_ATTR_EX_LISTEN_TIMING;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x0004);
 			p2pielen += 2;
 
 			/*	Value: */
 			/*	Availability Period */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 			p2pielen += 2;
 
 			/*	Availability Interval */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0xFFFF);
 			p2pielen += 2;
 
 			/*	Device Info */
@@ -8989,7 +8989,7 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 			/*	Length: */
 			/*	21->P2P Device Address (6bytes) + Config Methods (2bytes) + Primary Device Type (8bytes)  */
 			/*	+ NumofSecondDevType (1byte) + WPS Device Name ID field (2bytes) + WPS Device Name Len field (2bytes) */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(21 + pwdinfo->device_name_len);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -9001,23 +9001,23 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 			/*	This field should be big endian. Noted by P2P specification. */
 			if ((pwdinfo->ui_got_wps_info == P2P_GOT_WPSINFO_PEER_DISPLAY_PIN) ||
 			    (pwdinfo->ui_got_wps_info == P2P_GOT_WPSINFO_SELF_DISPLAY_PIN))
-				*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_DISPLAY);
+				*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_DISPLAY);
 			else
-				*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_PBC);
+				*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_CONFIG_METHOD_PBC);
 
 			p2pielen += 2;
 
 			/*	Primary Device Type */
 			/*	Category ID */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
+			*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_CID_MULIT_MEDIA);
 			p2pielen += 2;
 
 			/*	OUI */
-			*(u32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
+			*(__be32 *)(p2pie + p2pielen) = cpu_to_be32(WPSOUI);
 			p2pielen += 4;
 
 			/*	Sub Category ID */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
+			*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_PDT_SCID_MEDIA_SERVER);
 			p2pielen += 2;
 
 			/*	Number of Secondary Device Types */
@@ -9025,11 +9025,11 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 
 			/*	Device Name */
 			/*	Type: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
+			*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(WPS_ATTR_DEVICE_NAME);
 			p2pielen += 2;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
+			*(__be16 *)(p2pie + p2pielen) = cpu_to_be16(pwdinfo->device_name_len);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -9041,7 +9041,7 @@ void _issue_assocreq(_adapter *padapter, u8 is_reassoc)
 			p2pie[p2pielen++] = P2P_ATTR_INTERFACE;
 
 			/*	Length: */
-			*(u16 *)(p2pie + p2pielen) = cpu_to_le16(0x000D);
+			*(__le16 *)(p2pie + p2pielen) = cpu_to_le16(0x000D);
 			p2pielen += 2;
 
 			/*	Value: */
@@ -9126,7 +9126,7 @@ static int _issue_nulldata(_adapter *padapter, unsigned char *da, unsigned int p
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv	*pxmitpriv;
 	struct mlme_ext_priv	*pmlmeext;
 	struct mlme_ext_info	*pmlmeinfo;
@@ -9314,7 +9314,7 @@ static int _issue_qos_nulldata(_adapter *padapter, unsigned char *da, u16 tid, i
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl, *qc;
+	__le16 *fctrl, *qc;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -9448,7 +9448,7 @@ static int _issue_deauth(_adapter *padapter, unsigned char *da, unsigned short r
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -9585,7 +9585,7 @@ void issue_action_spct_ch_switch(_adapter *padapter, u8 *ra, u8 new_ch, u8 ch_of
 	struct pkt_attrib			*pattrib;
 	unsigned char				*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short			*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
@@ -9653,7 +9653,7 @@ void issue_action_SA_Query(_adapter *padapter, unsigned char *raddr, unsigned ch
 	struct pkt_attrib		*pattrib;
 	u8					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	u16					*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -9759,7 +9759,7 @@ static int issue_action_ba(_adapter *padapter, unsigned char *raddr, unsigned ch
 	struct pkt_attrib		*pattrib;
 	u8					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	u16					*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -10085,7 +10085,7 @@ void issue_action_BSSCoexistPacket(_adapter *padapter)
 	struct pkt_attrib			*pattrib;
 	unsigned char				*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short			*fctrl;
+	__le16 *fctrl;
 	struct	wlan_network	*pnetwork = NULL;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
@@ -10238,7 +10238,7 @@ int _issue_action_SM_PS(_adapter *padapter ,  unsigned char *raddr , u8 NewMimoP
 	struct pkt_attrib			*pattrib;
 	unsigned char					*pframe;
 	struct rtw_ieee80211_hdr	*pwlanhdr;
-	unsigned short				*fctrl;
+	__le16 *fctrl;
 	struct xmit_priv			*pxmitpriv = &(padapter->xmitpriv);
 	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
@@ -12938,7 +12938,7 @@ void issue_action_ft_request(_adapter *padapter, u8 *pTargetAddr)
 	u8 action = RTW_WLAN_ACTION_FT_REQUEST;
 	u8 is_ft_roaming_with_rsn_ie = _TRUE;
 	u8 *pie = NULL;
-	u16 *fctrl = NULL;
+	__le16 *fctrl;
 	u32 ft_ie_len = 0;
 
 	pmgntframe = alloc_mgtxmitframe(pxmitpriv);
@@ -13127,15 +13127,15 @@ static int rtw_auto_ap_start_beacon(_adapter *adapter)
 	ie += sz;
 
 	/* beacon interval : 2bytes */
-	*(u16 *)ie = cpu_to_le16((u16)100); /* BCN_INTERVAL=100; */
+	*(__le16 *)ie = cpu_to_le16((u16)100); /* BCN_INTERVAL=100; */
 	sz += 2;
 	ie += 2;
 
 	/* capability info */
 	*(u16 *)ie = 0;
-	*(u16 *)ie |= cpu_to_le16(cap_ESS);
-	*(u16 *)ie |= cpu_to_le16(cap_ShortPremble);
-	/* *(u16*)ie |= cpu_to_le16(cap_Privacy); */
+	*(__le16 *)ie |= cpu_to_le16(cap_ESS);
+	*(__le16 *)ie |= cpu_to_le16(cap_ShortPremble);
+	/* *(__le16*)ie |= cpu_to_le16(cap_Privacy); */
 	sz += 2;
 	ie += 2;
 
