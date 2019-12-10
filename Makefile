@@ -1,5 +1,5 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
-EXTRA_CFLAGS += -O1
+EXTRA_CFLAGS += -O3 -frename-registers -mtune=native
 #EXTRA_CFLAGS += -O3
 #EXTRA_CFLAGS += -Wall
 #EXTRA_CFLAGS += -Wextra
@@ -62,6 +62,7 @@ CONFIG_TXPWR_LIMIT_EN = auto
 CONFIG_RTW_CHPLAN = 0xFF
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
+CONFIG_RTW_IQK_FW_OFFLOAD = y
 CONFIG_SIGNAL_SCALE_MAPPING = n
 CONFIG_80211W = n
 CONFIG_REDUCE_TX_CPU_LOADING = n
@@ -71,14 +72,14 @@ CONFIG_WIFI_MONITOR = n
 CONFIG_MCC_MODE = n
 CONFIG_APPEND_VENDOR_IE_ENABLE = n
 CONFIG_RTW_NAPI = y
-CONFIG_RTW_GRO = y
+CONFIG_RTW_GRO = n
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
 ########################## Debug ###########################
 CONFIG_RTW_DEBUG = y
 # default log level is _DRV_WARNING_ = 3,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
-CONFIG_RTW_LOG_LEVEL = 3
+CONFIG_RTW_LOG_LEVEL = 0
 ######################## Wake On Lan ##########################
 CONFIG_WOWLAN = n
 CONFIG_WAKEUP_TYPE = 0x7 #bit2: deauth, bit1: unicast, bit0: magic pkt.
