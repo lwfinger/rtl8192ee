@@ -726,7 +726,7 @@ enable napi only = 1, disable napi = 0*/
 int rtw_en_napi = 1;
 module_param(rtw_en_napi, int, 0644);
 #ifdef CONFIG_RTW_NAPI_DYNAMIC
-int rtw_napi_threshold = 100; /* unit: Mbps */
+int rtw_napi_threshold = 1; /* unit: Mbps */
 module_param(rtw_napi_threshold, int, 0644);
 #endif /* CONFIG_RTW_NAPI_DYNAMIC */
 #ifdef CONFIG_RTW_GRO
@@ -740,7 +740,7 @@ module_param(rtw_en_gro, int, 0644);
 #ifdef RTW_IQK_FW_OFFLOAD
 int rtw_iqk_fw_offload = 1;
 #else
-int rtw_iqk_fw_offload;
+int rtw_iqk_fw_offload = 1;
 #endif /* RTW_IQK_FW_OFFLOAD */
 module_param(rtw_iqk_fw_offload, int, 0644);
 
