@@ -69,6 +69,7 @@ Optionally optimize the driver by tweaking some features:
 > sudo nano /etc/modprobe.d/8192ee.conf
 
 Add a line that says "options 8192ee rtw_iqk_fw_offload=1 rtw_en_napi=1 rtw_pci_aspm_enable=0 rtw_lps_level=0", no quotes.  
+
 This will disable power-saving features and enable offloading that might or might not improve performance at the cost of power. YMMV.
 
 DKMS
@@ -78,6 +79,14 @@ The module can also be installed with DKMS. Make sure to install the `dkms` pack
     sudo dkms add ./rtl8192ee
     sudo dkms build 8192ee/1.1
     sudo dkms install 8192ee/1.1
+
+Known Issues
+---------
+This driver is prone to locking up after some time of activity. (a day or two)
+
+To (mostly) solve this, append `swiotlb=32768` to your kernel parameters. How to do this depends on your distribution and bootloader.
+
+On GRUB, for example, this is at `/etc/default/grub`, at the `GRUB_CMDLINE_LINUX_DEFAULT` line. After changing it, you may run `sudo update-grub` to apply the change.
 
 Submitting Issues
 ---------
