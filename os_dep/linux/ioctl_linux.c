@@ -6663,14 +6663,11 @@ static int rtw_dbg_port(struct net_device *dev,
 				pregistrypriv->stbc_cap = 0x1F;
 	
 #endif /* CONFIG_80211N_HT */
-// fix this
-// checkpoint
  
 #ifdef CONFIG_80211N_HT
 				pregistrypriv->ht_enable = (u8)rtw_ht_enable;
 #endif /* CONFIG_80211N_HT */
 
-//checkpoint
 #ifdef CONFIG_BACKGROUND_NOISE_MONITOR
 		case 0x1e: {
 			RTW_INFO("===========================================\n");
