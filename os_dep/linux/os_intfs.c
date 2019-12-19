@@ -33,7 +33,8 @@ MODULE_VERSION(DRIVERVERSION);
 int rtw_chip_version = 0x00;
 int rtw_rfintfs = HWPI;
 int rtw_lbkmode = 0;/* RTL8712_AIR_TRX; */
-
+int rtw_stbc_cap = 0x1F;
+int rtw_ldpc_cap = 0x1F;
 
 int rtw_network_mode = Ndis802_11IBSS;/* Ndis802_11Infrastructure; */ /* infra, ad-hoc, auto */
 /* NDIS_802_11_SSID	ssid; */
@@ -43,11 +44,11 @@ int rtw_vrtl_carrier_sense = AUTO_VCS;
 int rtw_vcs_type = RTS_CTS;
 int rtw_rts_thresh = 2347;
 int rtw_frag_thresh = 2346;
-int rtw_preamble = PREAMBLE_LONG;/* long, short, auto */
+int rtw_preamble = PREAMBLE_AUTO;/* long, short, auto */
 int rtw_scan_mode = 1;/* active, passive */
 int rtw_adhoc_tx_pwr = 1;
-int rtw_soft_ap = 0;
-/* int smart_ps = 1; */
+int rtw_soft_ap = 1;
+int smart_ps = 1;
 #ifdef CONFIG_POWER_SAVING
 	int rtw_power_mgnt = PS_MODE_MAX;
 	#ifdef CONFIG_IPS_LEVEL_2
@@ -121,16 +122,16 @@ module_param(rtw_drv_log_level, uint, 0644);
 MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, default log level is _DRV_ERR_ = 2");
 
 int rtw_radio_enable = 1;
-int rtw_long_retry_lmt = 7;
-int rtw_short_retry_lmt = 7;
-int rtw_busy_thresh = 40;
-/* int qos_enable = 0; */ /* * */
+int rtw_long_retry_lmt = 4;
+int rtw_short_retry_lmt = 4;
+int rtw_busy_thresh = 20;
+int qos_enable = 0;
 int rtw_ack_policy = NORMAL_ACK;
 
 int rtw_mp_mode = 0;
 
 #if defined(CONFIG_MP_INCLUDED) && defined(CONFIG_RTW_CUSTOMER_STR)
-uint rtw_mp_customer_str = 0;
+uint rtw_mp_customer_str = 1;
 module_param(rtw_mp_customer_str, uint, 0644);
 MODULE_PARM_DESC(rtw_mp_customer_str, "Whether or not to enable customer str support on MP mode");
 #endif
@@ -138,7 +139,7 @@ MODULE_PARM_DESC(rtw_mp_customer_str, "Whether or not to enable customer str sup
 int rtw_software_encrypt = 0;
 int rtw_software_decrypt = 0;
 
-int rtw_acm_method = 0;/* 0:By SW 1:By HW. */
+int rtw_acm_method = 1;/* 0:By SW 1:By HW. */
 
 int rtw_wmm_enable = 1;/* default is set to enable the wmm. */
 
@@ -214,9 +215,9 @@ MODULE_PARM_DESC(rtw_rx_ampdu_sz_limit_4ss, "RX AMPDU size limit for 4SS link of
 * BIT3 - 160MHz, 0: non-support, 1: support */
 int rtw_short_gi = 0xf;
 /* BIT0: Enable VHT LDPC Rx, BIT1: Enable VHT LDPC Tx, BIT4: Enable HT LDPC Rx, BIT5: Enable HT LDPC Tx */
-int rtw_ldpc_cap = 0x33;
+//int rtw_ldpc_cap = 0x1F;
 /* BIT0: Enable VHT STBC Rx, BIT1: Enable VHT STBC Tx, BIT4: Enable HT STBC Rx, BIT5: Enable HT STBC Tx */
-int rtw_stbc_cap = 0x13;
+//int rtw_stbc_cap = 0x1F;
 /*
 * BIT0: Enable VHT SU Beamformer
 * BIT1: Enable VHT SU Beamformee
@@ -290,7 +291,7 @@ int rtw_ant_num = 0;
 module_param(rtw_ant_num, int, 0644);
 MODULE_PARM_DESC(rtw_ant_num, "Antenna number setting, 0:by efuse");
 
-int rtw_bt_iso = 2;/* 0:Low, 1:High, 2:From Efuse */
+int rtw_bt_iso = 3;/* 0:Low, 1:High, 2:From Efuse */
 int rtw_bt_sco = 3;/* 0:Idle, 1:None-SCO, 2:SCO, 3:From Counter, 4.Busy, 5.OtherBusy */
 int rtw_bt_ampdu = 1 ; /* 0:Disable BT control A-MPDU, 1:Enable BT control A-MPDU. */
 #endif /* CONFIG_BT_COEXIST */
@@ -4831,3 +4832,4 @@ int rtw_vendor_ie_set_api(struct net_device *dev, char *extra)
 EXPORT_SYMBOL(rtw_vendor_ie_set_api);
 
 #endif
+

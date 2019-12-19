@@ -1,0 +1,55 @@
+Some things taken from the datasheet paper linked for convenience.
+
+- Chipset specs -
+
+Reference chipset: RTL8192E-GR
+
+80211n Mi-Mo 2x2 + OFDM
+
+80211a/b/g/n (8192e-cg does not support a)
+
+80211e WMM (QoS solution)
+
+80211h DFS (Auto-select channel)
+
+80211k Radio Resource Management
+
+80211i WPA/WPA2 Support (warning: high entropy requirement!)
+
+A-MSDU/A-MPDU Frame Aggregation
+
+Low Latency High-Throughput Block Acknowledgement (Do not mistake for DELAYED-BA feature in hostapd)
+
+MIMO SMPS power saving mechanism
+
+20/40 Coexistence
+
+Multiple BSSIDs
+
+Wake-On-Lan via Magic Packet
+
+TXOP-SIFS
+
+TX-STBC & RX-STBC
+
+Automatic Gain Control
+
+Antenna Diversity
+
+Short Preamble (20/40MHz)
+
+- Driver info -
+
+Theoretical data throughput limit: 150Mbps@20MHz@n/300Mbps@40MHz@n 
+Actual data throughput limit (client): 150Mbps@20MHz@n/300Mbps@40MHz@n
+Actual data throughput limit (AP): 50Mbps@20MHz@n/~40Mbps@40MHz@n
+
+Default CFLAGS: -Ofast -frename-registers -mtune=native
+	        --flto and --march=native will result in a nonfunctional executable.
+Default LDFLAGS: --strip-all -O3
+
+Test device: TL-WN881ND v2
+
+Test chipset: RTL8192E-CG
+
+Interface: PCI-E 1.1

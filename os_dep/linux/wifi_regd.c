@@ -12,6 +12,11 @@
  * more details.
  *
  *****************************************************************************/
+// set your desired TXPOWER/EIRP here
+// measured in dBm
+// common settings are:
+// 20 -> 100mW; 30-> 1W; 36 -> 4W; 37 -> 5W
+// Please be careful! You may fry your adapter if you set this too high.
 
 #include <drv_types.h>
 
@@ -34,7 +39,7 @@ static struct country_code_to_enum_rd allCountries[] = {
 
 /* 2G chan 01 - chan 11 */
 #define RTW_2GHZ_CH01_11	\
-	REG_RULE(2412-10, 2462+10, 40, 0, 20, 0)
+	REG_RULE(2412-10, 2462+10, 40, 0, 30, 0)
 
 /*
  *We enable active scan on these a case
@@ -43,12 +48,12 @@ static struct country_code_to_enum_rd allCountries[] = {
 
 /* 2G chan 12 - chan 13, PASSIV SCAN */
 #define RTW_2GHZ_CH12_13	\
-	REG_RULE(2467-10, 2472+10, 40, 0, 20,	\
+	REG_RULE(2467-10, 2472+10, 40, 0, 30,	\
 		 NL80211_RRF_PASSIVE_SCAN)
 
 /* 2G chan 14, PASSIVS SCAN, NO OFDM (B only) */
 #define RTW_2GHZ_CH14	\
-	REG_RULE(2484-10, 2484+10, 40, 0, 20,	\
+	REG_RULE(2484-10, 2484+10, 40, 0, 30,	\
 		 NL80211_RRF_PASSIVE_SCAN | NL80211_RRF_NO_OFDM)
 
 /* 5G chan 36 - chan 64 */

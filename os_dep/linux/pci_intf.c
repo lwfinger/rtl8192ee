@@ -422,8 +422,6 @@ void rtw_pci_disable_aspm(_adapter *padapter)
 
 	rtw_pci_platform_switch_device_pci_aspm(padapter, linkctrl_reg);
 
-	rtw_udelay_os(50);
-
 	/* When there exists anyone's BusNum, DevNum, and FuncNum that are set to 0xff, */
 	/* we do not execute any action and return. Added by tynli. */
 	if ((pcipriv->busnumber == 0xff && pcipriv->devnumber == 0xff && pcipriv->funcnumber == 0xff) ||
@@ -526,8 +524,6 @@ void rtw_pci_enable_aspm(_adapter *padapter)
 		 (pcipriv->pcibridge_pciehdr_offset + 0x10),
 		 u_pcibridge_aspmsetting);
 
-	rtw_udelay_os(50);
-
 	/*Get ASPM level (with/without Clock Req)*/
 	aspmlevel |= pdvobjpriv->const_devicepci_aspm_setting;
 	u_device_aspmsetting = pcipriv->linkctrl_reg;
@@ -540,7 +536,6 @@ void rtw_pci_enable_aspm(_adapter *padapter)
 		RT_SET_PS_LEVEL(pwrpriv, RT_RF_OFF_LEVL_CLK_REQ);
 	}
 
-	rtw_udelay_os(50);
 }
 
 static u8 rtw_pci_get_amd_l1_patch(struct dvobj_priv *pdvobjpriv, struct pci_dev *pdev)

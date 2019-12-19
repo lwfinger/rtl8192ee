@@ -6653,91 +6653,24 @@ static int rtw_dbg_port(struct net_device *dev,
 			break;
 #endif
 #ifdef CONFIG_80211N_HT
-		case 0x19: {
+
 			struct registry_priv	*pregistrypriv = &padapter->registrypriv;
 			/* extra_arg : */
 			/* BIT0: Enable VHT LDPC Rx, BIT1: Enable VHT LDPC Tx, */
 			/* BIT4: Enable HT LDPC Rx, BIT5: Enable HT LDPC Tx */
-			if (arg == 0) {
-				RTW_INFO("driver disable LDPC\n");
-				pregistrypriv->ldpc_cap = 0x00;
-			} else if (arg == 1) {
-				RTW_INFO("driver set LDPC cap = 0x%x\n", extra_arg);
-				pregistrypriv->ldpc_cap = (u8)(extra_arg & 0x33);
-			}
-		}
-			break;
-		case 0x1a: {
-			struct registry_priv	*pregistrypriv = &padapter->registrypriv;
-			/* extra_arg : */
-			/* BIT0: Enable VHT STBC Rx, BIT1: Enable VHT STBC Tx, */
-			/* BIT4: Enable HT STBC Rx, BIT5: Enable HT STBC Tx */
-			if (arg == 0) {
-				RTW_INFO("driver disable STBC\n");
-				pregistrypriv->stbc_cap = 0x00;
-			} else if (arg == 1) {
-				RTW_INFO("driver set STBC cap = 0x%x\n", extra_arg);
-				pregistrypriv->stbc_cap = (u8)(extra_arg & 0x33);
-			}
-		}
-			break;
+				RTW_INFO("driver enable LDPC and STBC\n");
+				pregistrypriv->ldpc_cap = 0x1F;
+				pregistrypriv->stbc_cap = 0x1F;
+	
 #endif /* CONFIG_80211N_HT */
-		case 0x1b: {
-			struct registry_priv	*pregistrypriv = &padapter->registrypriv;
-
-			if (arg == 0) {
-				RTW_INFO("disable driver ctrl max_rx_rate, reset to default_rate_set\n");
-				init_mlme_default_rate_set(padapter);
+// fix this
+// checkpoint
+ 
 #ifdef CONFIG_80211N_HT
 				pregistrypriv->ht_enable = (u8)rtw_ht_enable;
 #endif /* CONFIG_80211N_HT */
-			} else if (arg == 1) {
 
-				int i;
-				u8 max_rx_rate;
-
-				RTW_INFO("enable driver ctrl max_rx_rate = 0x%x\n", extra_arg);
-
-				max_rx_rate = (u8)extra_arg;
-
-				if (max_rx_rate < 0xc) { /* max_rx_rate < MSC0->B or G -> disable HT */
-#ifdef CONFIG_80211N_HT
-					pregistrypriv->ht_enable = 0;
-#endif /* CONFIG_80211N_HT */
-					for (i = 0; i < NumRates; i++) {
-						if (pmlmeext->datarate[i] > max_rx_rate)
-							pmlmeext->datarate[i] = 0xff;
-					}
-
-				}
-#ifdef CONFIG_80211N_HT
-				else if (max_rx_rate < 0x1c) { /* mcs0~mcs15 */
-					u32 mcs_bitmap = 0x0;
-
-					for (i = 0; i < ((max_rx_rate + 1) - 0xc); i++)
-						mcs_bitmap |= BIT(i);
-
-					set_mcs_rate_by_mask(pmlmeext->default_supported_mcs_set, mcs_bitmap);
-				}
-#endif /* CONFIG_80211N_HT							 */
-			}
-		}
-			break;
-		case 0x1c: { /* enable/disable driver control AMPDU Density for peer sta's rx */
-			if (arg == 0) {
-				RTW_INFO("disable driver ctrl ampdu density\n");
-				padapter->driver_ampdu_spacing = 0xFF;
-			} else if (arg == 1) {
-
-				RTW_INFO("enable driver ctrl ampdu density = %d\n", extra_arg);
-
-				if (extra_arg > 0x07)
-					padapter->driver_ampdu_spacing = 0xFF;
-				else
-					padapter->driver_ampdu_spacing = extra_arg;
-			}
-		}
-			break;
+//checkpoint
 #ifdef CONFIG_BACKGROUND_NOISE_MONITOR
 		case 0x1e: {
 			RTW_INFO("===========================================\n");

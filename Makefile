@@ -1,5 +1,5 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
-EXTRA_CFLAGS += -O3 -frename-registers -mtune=native
+EXTRA_CFLAGS += -Ofast -frename-registers -mtune=native
 #EXTRA_CFLAGS += -O3
 #EXTRA_CFLAGS += -Wall
 #EXTRA_CFLAGS += -Wextra
@@ -13,7 +13,7 @@ EXTRA_CFLAGS += -Wno-unused-label
 EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused
-#EXTRA_CFLAGS += -Wno-uninitialized
+EXTRA_CFLAGS += -Wno-uninitialized -Wno-implicit-fallthrough -Wno-declaration-after-statement
 
 GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
 ifeq ($(GCC_VER_49),1)
@@ -22,9 +22,13 @@ endif
 
 EXTRA_CFLAGS += -I$(src)/include
 
-EXTRA_LDFLAGS += --strip-debug
+EXTRA_LDFLAGS += --strip-all -O3 -flto
 
 CONFIG_AUTOCFG_CP = n
+
+########################## TXPOWER HACK #######################
+
+CONFIG_TARGET_TXPWR = 37
 
 ########################## WIFI IC ############################
 CONFIG_MULTIDRV = n
@@ -54,27 +58,35 @@ CONFIG_BT_COEXIST = n
 CONFIG_INTEL_WIDI = n
 CONFIG_WAPI_SUPPORT = n
 CONFIG_EFUSE_CONFIG_FILE = y
-CONFIG_EXT_CLK = n
+CONFIG_EXT_CLK = y
 CONFIG_TRAFFIC_PROTECT = n
 CONFIG_LOAD_PHY_PARA_FROM_FILE = y
-CONFIG_TXPWR_BY_RATE_EN = auto
-CONFIG_TXPWR_LIMIT_EN = auto
 CONFIG_RTW_CHPLAN = 0xFF
-CONFIG_RTW_ADAPTIVITY_EN = disable
-CONFIG_RTW_ADAPTIVITY_MODE = normal
+CONFIG_RTW_ADAPTIVITY_EN = enable
+CONFIG_RTW_ADAPTIVITY_MODE = carrier sense
 CONFIG_RTW_IQK_FW_OFFLOAD = y
-CONFIG_SIGNAL_SCALE_MAPPING = n
+CONFIG_SIGNAL_SCALE_MAPPING = y
 CONFIG_80211W = n
 CONFIG_REDUCE_TX_CPU_LOADING = n
 CONFIG_BR_EXT = y
-CONFIG_TDLS = n
-CONFIG_WIFI_MONITOR = n
-CONFIG_MCC_MODE = n
-CONFIG_APPEND_VENDOR_IE_ENABLE = n
+CONFIG_WIFI_MONITOR = y
 CONFIG_RTW_NAPI = y
 CONFIG_RTW_GRO = n
-CONFIG_RTW_IPCAM_APPLICATION = n
-CONFIG_RTW_REPEATER_SON = n
+CONFIG_64BIT_DMA = y
+CONFIG_PM = y
+CONFIG_AP_MODE = y
+CONFIG_HOSTAPD_MLME = y
+CONFIG_80211N_HT = y
+CONFIG_QOS_OPTIMIZATION = y
+
+RTW_NOTCH_FILTER = y
+CONFIG_RTW_NOTCH_FILTER = y
+
+CONFIG_IOCTL_CFG80211 = y
+CONFIG_TCP_CSUM_OFFLOAD_TX = y
+CONFIG_AUTO_AP_MODE = y
+CONFIG_PCI_ASPM = y
+CONFIG_HPET_TIMER = y
 ########################## Debug ###########################
 CONFIG_RTW_DEBUG = y
 # default log level is _DRV_WARNING_ = 3,
@@ -85,7 +97,7 @@ CONFIG_WOWLAN = n
 CONFIG_WAKEUP_TYPE = 0x7 #bit2: deauth, bit1: unicast, bit0: magic pkt.
 CONFIG_GPIO_WAKEUP = n
 CONFIG_WAKEUP_GPIO_IDX = default
-CONFIG_HIGH_ACTIVE = n
+CONFIG_HIGH_ACTIVE = y
 CONFIG_PNO_SUPPORT = n
 CONFIG_PNO_SET_DEBUG = n
 CONFIG_AP_WOWLAN = n
