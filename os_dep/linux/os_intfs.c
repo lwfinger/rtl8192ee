@@ -47,6 +47,7 @@ int rtw_frag_thresh = 2346;
 int rtw_preamble = PREAMBLE_AUTO;/* long, short, auto */
 int rtw_scan_mode = 1;/* active, passive */
 int rtw_adhoc_tx_pwr = 1;
+// expose soft ap support
 int rtw_soft_ap = 1;
 int smart_ps = 1;
 #ifdef CONFIG_POWER_SAVING
@@ -123,7 +124,7 @@ MODULE_PARM_DESC(rtw_drv_log_level, "set log level when insert driver module, de
 
 int rtw_radio_enable = 1;
 int rtw_long_retry_lmt = 4;
-int rtw_short_retry_lmt = 4;
+int rtw_short_retry_lmt = 7;
 int rtw_busy_thresh = 20;
 int qos_enable = 0;
 int rtw_ack_policy = NORMAL_ACK;
@@ -291,7 +292,7 @@ int rtw_ant_num = 0;
 module_param(rtw_ant_num, int, 0644);
 MODULE_PARM_DESC(rtw_ant_num, "Antenna number setting, 0:by efuse");
 
-int rtw_bt_iso = 3;/* 0:Low, 1:High, 2:From Efuse */
+int rtw_bt_iso = 2;/* 0:Low, 1:High, 2:From Efuse */
 int rtw_bt_sco = 3;/* 0:Idle, 1:None-SCO, 2:SCO, 3:From Counter, 4.Busy, 5.OtherBusy */
 int rtw_bt_ampdu = 1 ; /* 0:Disable BT control A-MPDU, 1:Enable BT control A-MPDU. */
 #endif /* CONFIG_BT_COEXIST */
