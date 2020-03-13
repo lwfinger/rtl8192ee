@@ -1458,7 +1458,7 @@ void dump_ht_cap_ie(void *sel, u8 *ie, u32 ie_len)
 	u16 len;
 
 	u8 *ht_cap_ie;
-	sint ht_cap_ielen;
+	sint ht_cap_ielen = 0;
 
 	ht_cap_ie = rtw_get_ie(ie, _HT_CAPABILITY_IE_, &ht_cap_ielen, ie_len);
 	if (!ie || ht_cap_ie != ie)
