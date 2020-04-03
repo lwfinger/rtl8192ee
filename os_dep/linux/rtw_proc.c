@@ -3272,7 +3272,7 @@ struct proc_dir_entry *rtw_odm_proc_init(struct net_device *dev)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0))
 			entry = rtw_proc_create_entry(odm_proc_hdls[i].name, dir_odm, &rtw_odm_proc_seq_ops, (void *)i);
 #else
-			entry = rtw_proc_create_entry(odm_proc_hdls[i].name, dir_odm, &rtw_odm_proc_seq_ops, (void *)i);
+			entry = rtw_proc_create_entry(odm_proc_hdls[i].name, dir_odm, &rtw_odm_proc_seq_fops, (void *)i);
 #endif
 		else if (odm_proc_hdls[i].type == RTW_PROC_HDL_TYPE_SSEQ)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0))
