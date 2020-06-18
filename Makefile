@@ -22,7 +22,7 @@ endif
 
 EXTRA_CFLAGS += -I$(src)/include
 
-EXTRA_LDFLAGS += --strip-debug
+EXTRA_LDFLAGS += --strip-all -O3
 
 CONFIG_AUTOCFG_CP = n
 
