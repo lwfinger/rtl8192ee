@@ -35,7 +35,7 @@ consult your distro's documentation.
 
 Depending on your distribution, you *might* need to run this as root.  
 
-`make all -j$(nproc)`
+`make all`
 
 ### Installing
 
