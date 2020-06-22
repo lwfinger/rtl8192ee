@@ -103,8 +103,11 @@ int transmit_power_override = 0;
 
 DKMS
 ---------
-The module can also be installed with DKMS. Make sure to install the `dkms` package first.
-
+The module can also be installed with DKMS. Make sure to install the `dkms` package first.  
+If you aren't updating from an older commit of the driver, there is no need to run the "remove" command.
+    
+    sudo dkms remove 8192ee/1.1
+    
     sudo dkms add ./rtl8192ee
     sudo dkms build 8192ee/1.1
     sudo dkms install 8192ee/1.1
