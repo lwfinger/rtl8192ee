@@ -51,8 +51,8 @@ Now, tell the system to load the module on boot.
 
 ### Using as AP
 
-Reference: TL-WN881ND v2
-This device can broadcast on channels 1-13.
+Reference: TL-WN881ND v2  
+This device can broadcast on channels 1-13.  
 Using hostapd to manage your AP, set the proper ht-capab field for this device, which is:  
 
 `HT_CAPAB=[RX-STBC1][SHORT-GI-40][SHORT-GI-20][DSSS_CCK-40][MAX-AMSDU-7935]`
@@ -103,8 +103,11 @@ int transmit_power_override = 0;
 
 DKMS
 ---------
-The module can also be installed with DKMS. Make sure to install the `dkms` package first.
-
+The module can also be installed with DKMS. Make sure to install the `dkms` package first.  
+If you aren't updating from an older commit of the driver, there is no need to run the "remove" command.
+    
+    sudo dkms remove 8192ee/1.1
+    
     sudo dkms add ./rtl8192ee
     sudo dkms build 8192ee/1.1
     sudo dkms install 8192ee/1.1
