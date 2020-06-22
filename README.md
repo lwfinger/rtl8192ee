@@ -51,8 +51,8 @@ Now, tell the system to load the module on boot.
 
 ### Using as AP
 
-Reference: TL-WN881ND v2
-This device can broadcast on channels 1-13.
+Reference: TL-WN881ND v2  
+This device can broadcast on channels 1-13.  
 Using hostapd to manage your AP, set the proper ht-capab field for this device, which is:  
 
 `HT_CAPAB=[RX-STBC1][SHORT-GI-40][SHORT-GI-20][DSSS_CCK-40][MAX-AMSDU-7935]`
