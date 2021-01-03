@@ -2996,7 +2996,9 @@ int storeAdaptorInfoFile(char *path, u8 *efuse_data)
 int retriveAdaptorInfoFile(char *path, u8 *efuse_data)
 {
 	int ret = _SUCCESS;
+  	#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,10,0))
 	mm_segment_t oldfs;
+  	#endif
 	struct file *fp;
 
 	if (path && efuse_data) {
