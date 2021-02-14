@@ -23,7 +23,11 @@
    Note that these options may override your country's regulations about transmit power.
    Setting the device to work at higher transmit powers most of the time may cause premature 
    failure or damage by overheating. Make sure the device has enough airflow before you increase this.
-   It is currently unknown what these values translate to in dBm.
+   To get the equivalent in dBm, just divide the value by two, eg: 63 -> 31dBm
+   Very high values will introduce signal distortions from amplifier nonlinearity and may give diminishing returns.
+   
+   OBSERVATION: While these values do change the device's transmit power, the driver can't report these numbers to userspace yet so you
+		will just see 12dBm in system tools like iwconfig. This value is never correct, so you will have to eyeball things.
 */
 
 // Transmit Power Boost
@@ -32,6 +36,7 @@
 // Can take a negative value as well to reduce power.
 // Zero disables it. Default: 2, for a tiny boost.
 int transmit_power_boost = 2;
+
 // (ADVANCED) To know what transmit powers this device decides to use dynamically, see:
 // https://github.com/lwfinger/rtl8192ee/blob/42ad92dcc71cb15a62f8c39e50debe3a28566b5f/hal/phydm/rtl8192e/halhwimg8192e_rf.c#L1310
 
