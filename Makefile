@@ -26,6 +26,10 @@ EXTRA_LDFLAGS += --strip-all -O3
 
 CONFIG_AUTOCFG_CP = n
 
+LEAP15_3 = $shell(cat /usr/lib/os-release | egrep "openSUSE Leap 15.3")
+
+EXTRA_CFLAGS += -DLEAP15_3
+ 
 ########################## WIFI IC ############################
 CONFIG_MULTIDRV = n
 CONFIG_RTL8188E = n
@@ -743,11 +747,11 @@ ifeq ($(CONFIG_AUTOCFG_CP), y)
 ifeq ($(CONFIG_MULTIDRV), y)
 $(shell cp $(TopDIR)/autoconf_multidrv_$(HCI_NAME)_linux.h $(TopDIR)/include/autoconf.h)
 else
-ifeq ($(CONFIG_RTL8188E)$(CONFIG_SDIO_HCI),yy)
+ifeq ($(CONFIG_RTL8188E)$(CONFIG_SDIO_HCI), yy)
 $(shell cp $(TopDIR)/autoconf_rtl8189e_$(HCI_NAME)_linux.h $(TopDIR)/include/autoconf.h)
-else ifeq ($(CONFIG_RTL8188F)$(CONFIG_SDIO_HCI),yy)
+else ifeq ($(CONFIG_RTL8188F)$(CONFIG_SDIO_HCI), yy)
 $(shell cp $(TopDIR)/autoconf_rtl8189f_$(HCI_NAME)_linux.h $(TopDIR)/include/autoconf.h)
-else ifeq ($(CONFIG_RTL8723C),y)
+else ifeq ($(CONFIG_RTL8723C), y)
 $(shell cp $(TopDIR)/autoconf_rtl8723c_$(HCI_NAME)_linux.h $(TopDIR)/include/autoconf.h)
 else
 $(shell cp $(TopDIR)/autoconf_$(RTL871X)_$(HCI_NAME)_linux.h $(TopDIR)/include/autoconf.h)
@@ -1566,13 +1570,13 @@ EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 # Enable this for Android 5.0
 EXTRA_CFLAGS += -DCONFIG_RADIO_WORK
 endif
-#ARCH, CROSS_COMPILE, KSRC,and  MODDESTDIR are provided by external makefile
+#ARCH, CROSS_COMPILE, KSRC, and  MODDESTDIR are provided by external makefile
 INSTALL_PREFIX :=
 endif
 
 ifeq ($(CONFIG_PLATFORM_HISILICON), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DCONFIG_PLATFORM_HISILICON
-ifeq ($(SUPPORT_CONCURRENT),y)
+ifeq ($(SUPPORT_CONCURRENT), y)
 EXTRA_CFLAGS += -DCONFIG_CONCURRENT_MODE
 endif
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
@@ -1676,7 +1680,7 @@ EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 EXTRA_CFLAGS += -DCONFIG_QOS_OPTIMIZATION
 # Enable this for Android 5.0
 EXTRA_CFLAGS += -DCONFIG_RADIO_WORK
-ifeq ($(CONFIG_RTL8821C)$(CONFIG_SDIO_HCI),yy)
+ifeq ($(CONFIG_RTL8821C)$(CONFIG_SDIO_HCI), yy)
 EXTRA_CFLAGS += -DCONFIG_WAKEUP_GPIO_INPUT_MODE
 EXTRA_CFLAGS += -DCONFIG_BT_WAKE_HST_OPEN_DRAIN
 endif
