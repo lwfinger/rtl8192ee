@@ -1167,20 +1167,10 @@ u32 _rtw_down_sema(_sema *sema)
 
 inline void thread_exit(_completion *comp)
 {
-#ifdef PLATFORM_LINUX
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
 	complete_and_exit(comp, 0);
-#endif
-
-#ifdef PLATFORM_FREEBSD
-	printf("%s", "RTKTHREAD_exit");
-#endif
-
-#ifdef PLATFORM_OS_CE
-	ExitThread(STATUS_SUCCESS);
-#endif
-
-#ifdef PLATFORM_OS_XP
-	PsTerminateSystemThread(STATUS_SUCCESS);
+#else
+	kthread_complete_and_exit(comp, 0);
 #endif
 }
 
