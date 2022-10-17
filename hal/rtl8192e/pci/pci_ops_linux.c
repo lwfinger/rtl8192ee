@@ -49,9 +49,9 @@ static int rtl8192ee_init_rx_ring(_adapter *padapter)
 	/* rx_queue_idx 1:RX_CMD_QUEUE */
 	for (rx_queue_idx = 0; rx_queue_idx < 1/*RX_MAX_QUEUE*/; rx_queue_idx++) {
 		precvpriv->rx_ring[rx_queue_idx].desc =
-			pci_alloc_consistent(pdev,
+			dma_alloc_coherent(&pdev->dev,
 			sizeof(*precvpriv->rx_ring[rx_queue_idx].desc) * precvpriv->rxringcount,
-				     &precvpriv->rx_ring[rx_queue_idx].dma);
+				     &precvpriv->rx_ring[rx_queue_idx].dma, GFP_KERNEL);
 
 		if (!precvpriv->rx_ring[rx_queue_idx].desc
 		    || (unsigned long)precvpriv->rx_ring[rx_queue_idx].desc & 0xFF) {
@@ -76,9 +76,9 @@ static int rtl8192ee_init_rx_ring(_adapter *padapter)
 			mapping = (dma_addr_t *)skb->cb;
 
 			/* just set skb->cb to mapping addr for pci_unmap_single use */
-			*mapping = pci_map_single(pdev, skb_tail_pointer(skb),
+			*mapping = dma_map_single(&pdev->dev, skb_tail_pointer(skb),
 						  precvpriv->rxbuffersize,
-						  PCI_DMA_FROMDEVICE);
+						  DMA_FROM_DEVICE);
 
 			/* Reset FS, LS, Total len */
 			SET_RX_BUFFER_DESC_LS_92E(rx_desc, 0);
@@ -112,14 +112,14 @@ static void rtl8192ee_free_rx_ring(_adapter *padapter)
 			if (!skb)
 				continue;
 
-			pci_unmap_single(pdev,
+			dma_unmap_single(&pdev->dev,
 					 *((dma_addr_t *) skb->cb),
 					 precvpriv->rxbuffersize,
-					 PCI_DMA_FROMDEVICE);
+					 DMA_FROM_DEVICE);
 			kfree_skb(skb);
 		}
 
-		pci_free_consistent(pdev,
+		dma_free_coherent(&pdev->dev,
 			    sizeof(*precvpriv->rx_ring[rx_queue_idx].desc) *
 				    precvpriv->rxringcount,
 				    precvpriv->rx_ring[rx_queue_idx].desc,
@@ -142,7 +142,7 @@ static int rtl8192ee_init_tx_ring(_adapter *padapter, unsigned int prio, unsigne
 
 
 	RTW_INFO("%s entries num:%d\n", __func__, entries);
-	ring = pci_alloc_consistent(pdev, sizeof(*ring) * entries, &dma);
+	ring = dma_alloc_coherent(&pdev->dev, sizeof(*ring) * entries, &dma, GFP_KERNEL);
 	if (!ring || (unsigned long)ring & 0xFF) {
 		RTW_INFO("Cannot allocate TX ring (prio = %d)\n", prio);
 		return _FAIL;
@@ -181,7 +181,7 @@ static void rtl8192ee_free_tx_ring(_adapter *padapter, unsigned int prio)
 
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 		if (pxmitbuf) {
-			pci_unmap_single(pdev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+			dma_unmap_single(&pdev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
 			rtw_free_xmitbuf(pxmitpriv, pxmitbuf);
 		} else {
 			RTW_INFO("%s(): qlen(%d) is not zero, but have xmitbuf in pending queue\n", __func__, ring->qlen);
@@ -189,7 +189,7 @@ static void rtl8192ee_free_tx_ring(_adapter *padapter, unsigned int prio)
 		}
 	}
 
-	pci_free_consistent(pdev, sizeof(*ring->desc) * ring->entries, ring->desc, ring->dma);
+	dma_free_coherent(&pdev->dev, sizeof(*ring->desc) * ring->entries, ring->desc, ring->dma);
 	ring->desc = NULL;
 
 }
@@ -305,7 +305,7 @@ void rtl8192ee_reset_desc_ring(_adapter *padapter)
 
 				pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 				if (pxmitbuf) {
-					pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+					dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
 					rtw_free_xmitbuf(pxmitpriv, pxmitbuf);
 				} else {
 					RTW_INFO("%s(): qlen(%d) is not zero, but have xmitbuf in pending queue\n", __func__, ring->qlen);
@@ -520,7 +520,7 @@ static void rtl8192ee_tx_isr(PADAPTER Adapter, int prio)
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 
 		if (pxmitbuf) {
-			pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+			dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
 			rtw_sctx_done(&pxmitbuf->sctx);
 			rtw_free_xmitbuf(&(pxmitbuf->padapter->xmitpriv), pxmitbuf);
 		} else
@@ -563,7 +563,7 @@ static void rtl8192ee_tx_isr(PADAPTER Adapter, int prio)
 
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 		if (pxmitbuf) {
-			pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+			dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
 			rtw_sctx_done(&pxmitbuf->sctx);
 			rtw_free_xmitbuf(&(pxmitbuf->padapter->xmitpriv), pxmitbuf);
 		} else
@@ -880,10 +880,10 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 			* 8192EE_TODO						 */
 			precvframe->u.hdr.len = 0;
 
-			pci_unmap_single(pdvobjpriv->ppcidev,
+			dma_unmap_single(&pdvobjpriv->ppcidev->dev,
 					 *((dma_addr_t *)skb->cb),
 					 precvpriv->rxbuffersize,
-					 PCI_DMA_FROMDEVICE);
+					 DMA_FROM_DEVICE);
 
 
 			rtl8192e_query_rx_desc_status(precvframe, skb->data);
@@ -903,7 +903,7 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 
 				rtw_free_recvframe(precvframe, &precvpriv->free_recv_queue);
 				RTW_INFO("rtl8192ee_rx_mpdu:can not allocate memory for skb copy\n");
-				*((dma_addr_t *) skb->cb) = pci_map_single(pdvobjpriv->ppcidev, skb_tail_pointer(skb), precvpriv->rxbuffersize, PCI_DMA_FROMDEVICE);
+				*((dma_addr_t *) skb->cb) = dma_map_single(&pdvobjpriv->ppcidev->dev, skb_tail_pointer(skb), precvpriv->rxbuffersize, DMA_FROM_DEVICE);
 				goto done;
 			}
 
@@ -918,7 +918,7 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 				}
 				rtw_free_recvframe(precvframe, pfree_recv_queue);
 			}
-			*((dma_addr_t *) skb->cb) = pci_map_single(pdvobjpriv->ppcidev, skb_tail_pointer(skb), precvpriv->rxbuffersize, PCI_DMA_FROMDEVICE);
+			*((dma_addr_t *) skb->cb) = dma_map_single(&pdvobjpriv->ppcidev->dev, skb_tail_pointer(skb), precvpriv->rxbuffersize, DMA_FROM_DEVICE);
 		}
 done:
 
