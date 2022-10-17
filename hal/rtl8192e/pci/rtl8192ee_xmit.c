@@ -345,7 +345,7 @@ void update_txdesc_buf(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz)
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
 
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 	mapping = dma_map_single(&pdvobjpriv->ppcidev->dev, pxmitframe->buf_addr , sz + TX_WIFI_INFO_SIZE, DMA_TO_DEVICE);
 #else
 	mapping = pci_map_single(pdvobjpriv->ppcidev, pxmitframe->buf_addr , sz + TX_WIFI_INFO_SIZE, PCI_DMA_TODEVICE);

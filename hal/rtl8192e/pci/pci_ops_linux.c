@@ -49,9 +49,15 @@ static int rtl8192ee_init_rx_ring(_adapter *padapter)
 	/* rx_queue_idx 1:RX_CMD_QUEUE */
 	for (rx_queue_idx = 0; rx_queue_idx < 1/*RX_MAX_QUEUE*/; rx_queue_idx++) {
 		precvpriv->rx_ring[rx_queue_idx].desc =
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_alloc_coherent(&pdev->dev,
 			sizeof(*precvpriv->rx_ring[rx_queue_idx].desc) * precvpriv->rxringcount,
 				     &precvpriv->rx_ring[rx_queue_idx].dma, GFP_KERNEL);
+#else
+			pci_alloc_consistent(pdev,
+			sizeof(*precvpriv->rx_ring[rx_queue_idx].desc) * precvpriv->rxringcount,
+				     &precvpriv->rx_ring[rx_queue_idx].dma);
+#endif
 
 		if (!precvpriv->rx_ring[rx_queue_idx].desc
 		    || (unsigned long)precvpriv->rx_ring[rx_queue_idx].desc & 0xFF) {
@@ -76,9 +82,15 @@ static int rtl8192ee_init_rx_ring(_adapter *padapter)
 			mapping = (dma_addr_t *)skb->cb;
 
 			/* just set skb->cb to mapping addr for pci_unmap_single use */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			*mapping = dma_map_single(&pdev->dev, skb_tail_pointer(skb),
 						  precvpriv->rxbuffersize,
 						  DMA_FROM_DEVICE);
+#else
+			*mapping = pci_map_single(pdev, skb_tail_pointer(skb),
+						  precvpriv->rxbuffersize,
+						  PCI_DMA_FROMDEVICE);
+#endif
 
 			/* Reset FS, LS, Total len */
 			SET_RX_BUFFER_DESC_LS_92E(rx_desc, 0);
@@ -112,14 +124,25 @@ static void rtl8192ee_free_rx_ring(_adapter *padapter)
 			if (!skb)
 				continue;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_unmap_single(&pdev->dev,
 					 *((dma_addr_t *) skb->cb),
 					 precvpriv->rxbuffersize,
 					 DMA_FROM_DEVICE);
+#else
+			pci_unmap_single(pdev,
+					 *((dma_addr_t *) skb->cb),
+					 precvpriv->rxbuffersize,
+					 PCI_DMA_FROMDEVICE);
+#endif
 			kfree_skb(skb);
 		}
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 		dma_free_coherent(&pdev->dev,
+#else
+		pci_free_consistent(pdev,
+#endif
 			    sizeof(*precvpriv->rx_ring[rx_queue_idx].desc) *
 				    precvpriv->rxringcount,
 				    precvpriv->rx_ring[rx_queue_idx].desc,
@@ -142,7 +165,11 @@ static int rtl8192ee_init_tx_ring(_adapter *padapter, unsigned int prio, unsigne
 
 
 	RTW_INFO("%s entries num:%d\n", __func__, entries);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 	ring = dma_alloc_coherent(&pdev->dev, sizeof(*ring) * entries, &dma, GFP_KERNEL);
+#else
+	ring = pci_alloc_consistent(pdev, sizeof(*ring) * entries, &dma);
+#endif
 	if (!ring || (unsigned long)ring & 0xFF) {
 		RTW_INFO("Cannot allocate TX ring (prio = %d)\n", prio);
 		return _FAIL;
@@ -181,7 +208,11 @@ static void rtl8192ee_free_tx_ring(_adapter *padapter, unsigned int prio)
 
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 		if (pxmitbuf) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_unmap_single(&pdev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
+#else
+			pci_unmap_single(pdev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 			rtw_free_xmitbuf(pxmitpriv, pxmitbuf);
 		} else {
 			RTW_INFO("%s(): qlen(%d) is not zero, but have xmitbuf in pending queue\n", __func__, ring->qlen);
@@ -189,7 +220,11 @@ static void rtl8192ee_free_tx_ring(_adapter *padapter, unsigned int prio)
 		}
 	}
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 	dma_free_coherent(&pdev->dev, sizeof(*ring->desc) * ring->entries, ring->desc, ring->dma);
+#else
+	pci_free_consistent(pdev, sizeof(*ring->desc) * ring->entries, ring->desc, ring->dma);
+#endif
 	ring->desc = NULL;
 
 }
@@ -305,7 +340,11 @@ void rtl8192ee_reset_desc_ring(_adapter *padapter)
 
 				pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 				if (pxmitbuf) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 					dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
+#else
+					pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 					rtw_free_xmitbuf(pxmitpriv, pxmitbuf);
 				} else {
 					RTW_INFO("%s(): qlen(%d) is not zero, but have xmitbuf in pending queue\n", __func__, ring->qlen);
@@ -520,7 +559,11 @@ static void rtl8192ee_tx_isr(PADAPTER Adapter, int prio)
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 
 		if (pxmitbuf) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
+#else
+			pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 			rtw_sctx_done(&pxmitbuf->sctx);
 			rtw_free_xmitbuf(&(pxmitbuf->padapter->xmitpriv), pxmitbuf);
 		} else
@@ -563,7 +606,11 @@ static void rtl8192ee_tx_isr(PADAPTER Adapter, int prio)
 
 		pxmitbuf = rtl8192ee_dequeue_xmitbuf(ring);
 		if (pxmitbuf) {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_unmap_single(&pdvobjpriv->ppcidev->dev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, DMA_TO_DEVICE);
+#else
+			pci_unmap_single(pdvobjpriv->ppcidev, GET_TX_DESC_TX_BUFFER_ADDRESS_92E(tx_desc), pxmitbuf->len, PCI_DMA_TODEVICE);
+#endif
 			rtw_sctx_done(&pxmitbuf->sctx);
 			rtw_free_xmitbuf(&(pxmitbuf->padapter->xmitpriv), pxmitbuf);
 		} else
@@ -880,10 +927,17 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 			* 8192EE_TODO						 */
 			precvframe->u.hdr.len = 0;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			dma_unmap_single(&pdvobjpriv->ppcidev->dev,
 					 *((dma_addr_t *)skb->cb),
 					 precvpriv->rxbuffersize,
 					 DMA_FROM_DEVICE);
+#else
+			pci_unmap_single(pdvobjpriv->ppcidev,
+					 *((dma_addr_t *)skb->cb),
+					 precvpriv->rxbuffersize,
+					 PCI_DMA_FROMDEVICE);
+#endif
 
 
 			rtl8192e_query_rx_desc_status(precvframe, skb->data);
@@ -903,7 +957,11 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 
 				rtw_free_recvframe(precvframe, &precvpriv->free_recv_queue);
 				RTW_INFO("rtl8192ee_rx_mpdu:can not allocate memory for skb copy\n");
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 				*((dma_addr_t *) skb->cb) = dma_map_single(&pdvobjpriv->ppcidev->dev, skb_tail_pointer(skb), precvpriv->rxbuffersize, DMA_FROM_DEVICE);
+#else
+				*((dma_addr_t *) skb->cb) = pci_map_single(pdvobjpriv->ppcidev, skb_tail_pointer(skb), precvpriv->rxbuffersize, PCI_DMA_FROMDEVICE);
+#endif
 				goto done;
 			}
 
@@ -918,7 +976,11 @@ static void rtl8192ee_rx_mpdu(_adapter *padapter)
 				}
 				rtw_free_recvframe(precvframe, pfree_recv_queue);
 			}
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
 			*((dma_addr_t *) skb->cb) = dma_map_single(&pdvobjpriv->ppcidev->dev, skb_tail_pointer(skb), precvpriv->rxbuffersize, DMA_FROM_DEVICE);
+#else
+			*((dma_addr_t *) skb->cb) = pci_map_single(pdvobjpriv->ppcidev, skb_tail_pointer(skb), precvpriv->rxbuffersize, PCI_DMA_FROMDEVICE);
+#endif
 		}
 done:
 
