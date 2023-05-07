@@ -947,7 +947,7 @@ enum halrf_cmninfo_init_e	cmn_info,
 void
 halrf_cmn_info_hook(
 	void		*p_dm_void,
-enum halrf_cmninfo_hook_e cmn_info,
+	enum halrf_cmninfo_hook_e cmn_info,
 	void		*p_value
 )
 {
